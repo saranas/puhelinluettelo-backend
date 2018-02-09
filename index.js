@@ -12,6 +12,8 @@ app.use(bodyParser.json())
 
 app.use(morgan('common'))
 app.use(cors())
+app.use(express.static('build'))
+
 
 
 let persons = [
