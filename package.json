@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "watch": "nodemon index.js",
     "test": "\"echo \\\"Error: no test specified\\\" && exit 1\""
   },
   "repository": {
@@ -16,5 +17,14 @@
   "bugs": {
     "url": "https://github.com/saranas/puhelinluettelo-backend/issues"
   },
-  "homepage": "https://github.com/saranas/puhelinluettelo-backend#readme"
+  "homepage": "https://github.com/saranas/puhelinluettelo-backend#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "morgan": "^1.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.12"
+  }
 }
