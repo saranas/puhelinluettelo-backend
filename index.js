@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 
+const Person = require('./models/person')
+
 const app = express()
 
 app.use(bodyParser.json())
@@ -14,7 +16,7 @@ app.use(morgan('common'))
 app.use(cors())
 app.use(express.static('build'))
 
-
+/*
 
 let persons = [
     {
@@ -39,13 +41,25 @@ let persons = [
     }
   ]
 
+const formatPerson = (person) => {
+  return {
+    name: person.name,
+    number: person.number
+  }
+}
+*/
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
 })
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  //res.json(persons)
+  Person
+    .find({})
+    .then(people => {
+      res.json(people.map(Person.format))
+    })
 })
 
 app.get('/info', (req, res) => {
@@ -54,14 +68,19 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  console.log(request.params.id)
-  const id = Number(request.params.id)
+  /*const id = Number(request.params.id)
   const person = persons.find(person => person.id === id )
   if ( person ) {
     response.json(person)
   } else {
     response.status(404).end()
-  }
+  }*/
+
+  Person
+    .findById(request.params.id)
+    .then(person => {
+      response.json(person)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -96,11 +115,21 @@ app.post('/api/persons', (request, response) => {
     id: (Math.random() * (100 - 4) + 4)
   }
 
+  person
+    .save()
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+
+  
+  /*
+
   console.log(person.id + 'henkilön id')
 
   persons = persons.concat(person)
 
   response.json(person)
+  */
 })
 
 const PORT = process.env.PORT || 3001
