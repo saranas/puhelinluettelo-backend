@@ -92,11 +92,12 @@ app.delete('/api/persons/:id', (request, response) => {
 
 
 app.post('/api/persons', (request, response) => {
-  console.log(request.query)
-  const body = request.body
+  //console.log(request)
+  const body = request.query
+  console.log(body)
   //const body = request.query
 
-  const namelist = persons.map(person => person.name)
+  //const namelist = persons.map(person => person.name)
 
   //console.log('Tääääällä')
   //console.log(request)
@@ -105,15 +106,15 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({error: 'name missing'})
   } else if (body.number === undefined) {
     return response.status(400).json({error: 'number missing'})
-  } else if (namelist.includes(body.name)) {
+  } /*else if (namelist.includes(body.name)) {
     return response.status(400).json({error: 'person already exists'})
-  } 
+  } */
 
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: (Math.random() * (100 - 4) + 4)
-  }
+    number: body.number
+    //id: (Math.random() * (100 - 4) + 4)
+  })
 
   person
     .save()
