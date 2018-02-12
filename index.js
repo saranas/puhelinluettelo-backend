@@ -63,8 +63,11 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-  res.send('<p>Puhelinluettelossa on </p>' + persons.length 
+
+  Person.count({},function(err, count) { 
+    res.send('<p>Puhelinluettelossa on </p>'  + count
     +'<p> henkilön tiedot</p>' + new Date())
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
@@ -75,25 +78,62 @@ app.get('/api/persons/:id', (request, response) => {
   } else {
     response.status(404).end()
   }*/
-
+  console.log(request.params)
   Person
     .findById(request.params.id)
     .then(person => {
-      response.json(person)
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id' })
+    })
+})
+
+app.put('/api/persons/:id', (request, response) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person
+    .findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id' })
     })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
+  /*
   const id = Number(request.params.id)
   persons = persons.filter(person => person.id !== id)
 
   response.status(204).end()
+  */
+  Person
+    .findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => {
+      response.status(400).send({ error: 'malformatted id'})
+    })
 })
 
 
 app.post('/api/persons', (request, response) => {
   //console.log(request)
-  const body = request.query
+  const body = request.body
   console.log(body)
   //const body = request.query
 
@@ -115,6 +155,8 @@ app.post('/api/persons', (request, response) => {
     number: body.number
     //id: (Math.random() * (100 - 4) + 4)
   })
+
+  console.log(person)
 
   person
     .save()
